@@ -2,11 +2,22 @@
 import { FaCircle } from "react-icons/fa";
 import { IoPersonCircle } from "react-icons/io5";
 import { CiCirclePlus } from "react-icons/ci";
+import { IoChevronDown, IoChevronForward } from "react-icons/io5";
 import { useState } from "react";
-import CreateGroupModal from "./CreateGroupModal"; // Importamos el nuevo componente
+import CreateGroupModal from "./CreateGroupModal";
 
-export default function UserList({ users, onSelectUser, selectedUser, darkMode }) {
+export default function UserList({
+  users,
+  groups,
+  onSelectUser,
+  onSelectGroup,
+  selectedGroup,
+  selectedUser,
+  darkMode,
+}) {
   const [createGroup, setCreateGroup] = useState(false);
+  const [showUsers, setShowUsers] = useState(true);
+  const [showGroups, setShowGroups] = useState(true);
 
   const handleCloseCreateGroup = () => {
     setCreateGroup(false);
@@ -23,13 +34,101 @@ export default function UserList({ users, onSelectUser, selectedUser, darkMode }
         darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
       }`}
     >
+      {/* ENCABEZADO USUARIOS */}
       <div
         className={`p-4 border-b flex items-center justify-between transition-colors duration-300 ${
           darkMode ? "border-gray-700" : "border-gray-200"
         }`}
       >
-        <h2 className={`text-xl font-bold ${darkMode ? "text-white" : "text-gray-800"}`}>
+        <h2
+          className={`text-xl font-bold flex items-center gap-2 cursor-pointer ${
+            darkMode ? "text-white" : "text-gray-800"
+          }`}
+          onClick={() => setShowUsers(!showUsers)}
+        >
+          {showUsers ? <IoChevronDown /> : <IoChevronForward />}
           Usuarios Conectados
+        </h2>
+      </div>
+
+      {/* LISTA USUARIOS */}
+      {showUsers && (
+        <ul className="flex-1 overflow-y-auto">
+          {users.map((user) => (
+            <li
+              key={user.id}
+              className={`flex items-center p-4 cursor-pointer transition-colors duration-200 border-l-4 ${
+                selectedUser?.id === user.id
+                  ? darkMode
+                    ? "bg-blue-900 border-blue-500"
+                    : "bg-blue-100 border-blue-600"
+                  : darkMode
+                  ? "hover:bg-gray-700 border-transparent"
+                  : "hover:bg-gray-100 border-transparent"
+              }`}
+              onClick={() => onSelectUser(user)}
+            >
+              <div className="relative mr-4">
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={`Avatar de ${user.nombre}`}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <IoPersonCircle
+                    className={`w-12 h-12 ${darkMode ? "text-gray-600" : "text-gray-400"}`}
+                  />
+                )}
+                <FaCircle
+                  className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 ${
+                    darkMode ? "border-gray-800" : "border-white"
+                  } ${user.isOnline ? "text-green-500" : "text-gray-500"}`}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-center">
+                  <span
+                    className={`font-semibold truncate ${
+                      darkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    {user.nombre}
+                  </span>
+                  {user.lastMessageTime && (
+                    <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                      {user.lastMessageTime}
+                    </span>
+                  )}
+                </div>
+                {user.lastMessage && (
+                  <p className={`text-sm truncate ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                    {user.lastMessage}
+                  </p>
+                )}
+              </div>
+              {user.hasNewMessage && (
+                <span className="ml-2 w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* ENCABEZADO GRUPOS */}
+      <div
+        className={`p-4 border-b flex items-center justify-between transition-colors duration-300 ${
+          darkMode ? "border-gray-700" : "border-gray-200"
+        }`}
+      >
+        <h2
+          className={`text-xl font-bold flex items-center gap-2 cursor-pointer ${
+            darkMode ? "text-white" : "text-gray-800"
+          }`}
+          onClick={() => setShowGroups(!showGroups)}
+        >
+          {showGroups ? <IoChevronDown /> : <IoChevronForward />}
+          Grupos
         </h2>
         <button
           className={`p-2 rounded-full transition-colors duration-300 ${
@@ -43,65 +142,74 @@ export default function UserList({ users, onSelectUser, selectedUser, darkMode }
         </button>
       </div>
 
-      <ul className="flex-1 overflow-y-auto">
-        {users.map((user) => (
-          <li
-            key={user.id}
-            className={`flex items-center p-4 cursor-pointer transition-colors duration-200 border-l-4 ${
-              selectedUser?.id === user.id
-                ? `${darkMode ? "bg-blue-900 border-blue-500" : "bg-blue-100 border-blue-600"}`
-                : `${
-                    darkMode
-                      ? "hover:bg-gray-700 border-transparent"
-                      : "hover:bg-gray-100 border-transparent"
-                  }`
-            }`}
-            onClick={() => onSelectUser(user)}
-          >
-            <div className="relative mr-4">
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={`Avatar de ${user.nick}`}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-              ) : (
-                <IoPersonCircle
-                  className={`w-12 h-12 ${darkMode ? "text-gray-600" : "text-gray-400"}`}
-                />
-              )}
-              <FaCircle
-                className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 ${
-                  darkMode ? "border-gray-800" : "border-white"
-                } ${user.isOnline ? "text-green-500" : "text-gray-500"}`}
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex justify-between items-center">
-                <span
-                  className={`font-semibold truncate ${darkMode ? "text-white" : "text-gray-800"}`}
-                >
-                  {user.nick}
-                </span>
-                {user.lastMessageTime && (
-                  <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                    {user.lastMessageTime}
-                  </span>
+      {/* LISTA GRUPOS */}
+      {showGroups && (
+        <ul className="flex-1 overflow-y-auto">
+          {groups.length > 0 ? (
+            groups.map((group) => (
+              <li
+                key={group.id}
+                className={`flex items-center p-4 cursor-pointer transition-colors duration-200 border-l-4 ${
+                  selectedGroup?.id === group.id
+                    ? darkMode
+                      ? "bg-blue-900 border-blue-500"
+                      : "bg-blue-100 border-blue-600"
+                    : darkMode
+                    ? "hover:bg-gray-700 border-transparent"
+                    : "hover:bg-gray-100 border-transparent"
+                }`}
+                onClick={() => onSelectGroup(group)}
+              >
+                <div className="relative mr-4">
+                  {group.avatar ? (
+                    <img
+                      src={group.avatar}
+                      alt={`Avatar de ${group.name}`}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <IoPersonCircle
+                      className={`w-12 h-12 ${darkMode ? "text-gray-600" : "text-gray-400"}`}
+                    />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center">
+                    <span
+                      className={`font-semibold truncate ${
+                        darkMode ? "text-white" : "text-gray-800"
+                      }`}
+                    >
+                      {group.name}
+                    </span>
+                    {group.lastMessageTime && (
+                      <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                        {group.lastMessageTime}
+                      </span>
+                    )}
+                  </div>
+                  {group.lastMessage && (
+                    <p
+                      className={`text-sm truncate ${darkMode ? "text-gray-400" : "text-gray-500"}`}
+                    >
+                      {group.lastMessage}
+                    </p>
+                  )}
+                </div>
+                {group.hasNewMessage && (
+                  <span className="ml-2 w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></span>
                 )}
-              </div>
-              {user.lastMessage && (
-                <p className={`text-sm truncate ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                  {user.lastMessage}
-                </p>
-              )}
-            </div>
-            {user.hasNewMessage && (
-              <span className="ml-2 w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></span>
-            )}
-          </li>
-        ))}
-      </ul>
+              </li>
+            ))
+          ) : (
+            <p className={`p-4 text-center ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+              No tienes grupos creados.
+            </p>
+          )}
+        </ul>
+      )}
 
+      {/* MODAL CREAR GRUPO */}
       {createGroup && (
         <CreateGroupModal
           darkMode={darkMode}

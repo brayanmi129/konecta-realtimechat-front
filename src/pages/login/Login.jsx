@@ -2,9 +2,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Popup from "../../components/Popup";
+import utils from "../../utils/chatFunctions";
 
 export default function Login() {
-  const [nick, setNick] = useState("");
+  const [nombre, setnombre] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -15,11 +16,12 @@ export default function Login() {
     }, 3000);
   };
 
-  const handleLogin = () => {
-    if (nick.trim() === "") {
+  const handleLogin = async () => {
+    if (nombre.trim() === "") {
       handleLError("Por favor, ingresa un nombre.");
     } else {
-      localStorage.setItem("nick", nick);
+      const user = await utils.createUser(nombre);
+      localStorage.setItem("user", JSON.stringify({ nombre: user.nombre, id: user.id }));
       navigate("/chat");
     }
   };
@@ -31,9 +33,9 @@ export default function Login() {
           <h1 className="text-2xl font-bold mb-4 text-center">Ingresar al Chat</h1>
           <input
             type="text"
-            value={nick}
-            onChange={(e) => setNick(e.target.value)}
-            placeholder="Tu nombre o nick"
+            value={nombre}
+            onChange={(e) => setnombre(e.target.value)}
+            placeholder="Tu nombre o nombre"
             className="w-full border rounded p-2 mb-4"
           />
           <button
