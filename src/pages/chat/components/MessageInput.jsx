@@ -1,14 +1,29 @@
 import React, { useState } from "react";
 import { IoSend } from "react-icons/io5";
+import { IoMdAttach } from "react-icons/io";
+import UploadLayout from "./UploadLayout"; // Assuming you have an UploadLayout component
 
 export default function MessageInput({ onSendMessage, darkMode }) {
   const [message, setMessage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = (file) => {
+    console.log("Archivo listo para subir:", file);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (message.trim() === "") return;
     onSendMessage(message);
     setMessage("");
+  };
+
+  const handleUploading = (e) => {
+    setIsUploading(true);
+  };
+
+  const handleCloseUpload = () => {
+    setIsUploading(false);
   };
 
   return (
@@ -30,12 +45,28 @@ export default function MessageInput({ onSendMessage, darkMode }) {
           }`}
         />
         <button
+          className="bg-transparent p-3 text-gray-500 hover:text-gray-700 transition-colors"
+          onClick={handleUploading}
+        >
+          <IoMdAttach size={24} />
+        </button>
+        <button
           type="submit"
           className="bg-[rgb(40,0,200)] text-white p-3 rounded-lg hover:bg-[rgb(50,0,220)] transition-colors"
         >
           <IoSend />
         </button>
       </form>
+
+      {isUploading && (
+        <UploadLayout
+          darkMode={darkMode}
+          onClose={handleCloseUpload}
+          onUploadFile={handleFileUpload}
+        >
+          {" "}
+        </UploadLayout>
+      )}
     </div>
   );
 }
