@@ -7,6 +7,7 @@ import MessageInput from "./components/MessageInput";
 import { MdNotificationsNone, MdLogout, MdDarkMode, MdLightMode } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
 import io from "socket.io-client";
+import utils from "../../utils/chatFunctions";
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -141,6 +142,25 @@ export default function ChatPage() {
     socketRef.current.emit("sendMessage", newMessage);
   };
 
+  const handleSendAttachment = async (file) => {
+    if (!file || !socketRef.current || !chatSelected) return;
+    const url = await utils.uploadFile(file);
+    console.log("Archivo subido con éxito:", url);
+
+    const newMessage = {
+      chat_id: chatSelected,
+      usuario_id: currentUser.id,
+      contenido: null,
+      archivo_url: url,
+      archivo_tipo: null,
+      archivo_nombre: null,
+      creado: new Date().toISOString(),
+      sender_name: currentUser.nombre,
+    };
+
+    socketRef.current.emit("sendMessage", newMessage);
+  };
+
   const handleLogout = () => {
     socketRef.current?.disconnect();
     localStorage.removeItem("user");
@@ -253,7 +273,11 @@ export default function ChatPage() {
               darkMode={darkMode}
               isGroup={!!selectedGroup}
             />
-            <MessageInput onSendMessage={handleSendMessage} darkMode={darkMode} />
+            <MessageInput
+              onSendMessage={handleSendMessage}
+              onSendAttachment={handleSendAttachment}
+              darkMode={darkMode}
+            />
           </>
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center p-4">

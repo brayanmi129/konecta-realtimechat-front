@@ -37,13 +37,13 @@ export default function UserList({
 
   return (
     <div
-      className={`flex flex-col h-full border-r transition-colors duration-300 ${
+      className={`flex flex-col h-full border-r ${
         darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
       }`}
     >
       {/* ENCABEZADO USUARIOS */}
       <div
-        className={`p-4 border-b flex items-center justify-between transition-colors duration-300 ${
+        className={`p-4 border-b flex items-center justify-between ${
           darkMode ? "border-gray-700" : "border-gray-200"
         }`}
       >
@@ -64,7 +64,7 @@ export default function UserList({
           {users.map((user) => (
             <li
               key={user.id}
-              className={`flex items-center p-4 cursor-pointer transition-colors duration-200 border-l-4 ${
+              className={`flex items-center p-4 cursor-pointer border-l-4 ${
                 selectedUser?.id === user.id
                   ? darkMode
                     ? "bg-blue-900 border-blue-500"
@@ -107,7 +107,7 @@ export default function UserList({
 
       {/* ENCABEZADO GRUPOS */}
       <div
-        className={`p-4 border-b flex items-center justify-between transition-colors duration-300 ${
+        className={`p-4 border-b flex items-center justify-between ${
           darkMode ? "border-gray-700" : "border-gray-200"
         }`}
       >
@@ -121,7 +121,7 @@ export default function UserList({
           Grupos
         </h2>
         <button
-          className={`p-2 rounded-full transition-colors duration-300 ${
+          className={`p-2 rounded-full ${
             darkMode
               ? "text-gray-400 hover:text-white hover:bg-gray-700"
               : "text-gray-500 hover:text-blue-600 hover:bg-gray-100"
@@ -139,7 +139,7 @@ export default function UserList({
             groups.map((group) => (
               <li
                 key={group.id}
-                className={`flex items-center p-4 cursor-pointer transition-colors duration-200 border-l-4 ${
+                className={`flex items-center p-4 cursor-pointer border-l-4 ${
                   selectedGroup?.id === group.id
                     ? darkMode
                       ? "bg-blue-900 border-blue-500"
