@@ -45,6 +45,7 @@ export default function MessageInput({ onSendMessage, darkMode }) {
           }`}
         />
         <button
+          type="button"
           className="bg-transparent p-3 text-gray-500 hover:text-gray-700 transition-colors"
           onClick={handleUploading}
         >
