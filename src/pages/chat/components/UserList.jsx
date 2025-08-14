@@ -7,7 +7,7 @@ import { useState } from "react";
 import CreateGroupModal from "./CreateGroupModal";
 
 export default function UserList({
-  users,
+  users, // ahora solo onlineUsers
   groups,
   onSelectUser,
   onSelectGroup,
@@ -19,9 +19,7 @@ export default function UserList({
   const [showUsers, setShowUsers] = useState(true);
   const [showGroups, setShowGroups] = useState(true);
 
-  const handleCloseCreateGroup = () => {
-    setCreateGroup(false);
-  };
+  const handleCloseCreateGroup = () => setCreateGroup(false);
 
   const handleCreateGroup = (groupData) => {
     console.log("Creando grupo con los siguientes datos:", groupData);
@@ -87,29 +85,12 @@ export default function UserList({
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-center">
-                  <span
-                    className={`font-semibold truncate ${
-                      darkMode ? "text-white" : "text-gray-800"
-                    }`}
-                  >
-                    {user.nombre}
-                  </span>
-                  {user.lastMessageTime && (
-                    <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                      {user.lastMessageTime}
-                    </span>
-                  )}
-                </div>
-                {user.lastMessage && (
-                  <p className={`text-sm truncate ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                    {user.lastMessage}
-                  </p>
-                )}
+                <span
+                  className={`font-semibold truncate ${darkMode ? "text-white" : "text-gray-800"}`}
+                >
+                  {user.nombre}
+                </span>
               </div>
-              {user.hasNewMessage && (
-                <span className="ml-2 w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></span>
-              )}
             </li>
           ))}
         </ul>
@@ -174,31 +155,14 @@ export default function UserList({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-center">
-                    <span
-                      className={`font-semibold truncate ${
-                        darkMode ? "text-white" : "text-gray-800"
-                      }`}
-                    >
-                      {group.name}
-                    </span>
-                    {group.lastMessageTime && (
-                      <span className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                        {group.lastMessageTime}
-                      </span>
-                    )}
-                  </div>
-                  {group.lastMessage && (
-                    <p
-                      className={`text-sm truncate ${darkMode ? "text-gray-400" : "text-gray-500"}`}
-                    >
-                      {group.lastMessage}
-                    </p>
-                  )}
+                  <span
+                    className={`font-semibold truncate ${
+                      darkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    {group.name}
+                  </span>
                 </div>
-                {group.hasNewMessage && (
-                  <span className="ml-2 w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></span>
-                )}
               </li>
             ))
           ) : (
