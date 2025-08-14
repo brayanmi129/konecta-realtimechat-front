@@ -2,9 +2,18 @@
 import React, { useState } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaFileUpload } from "react-icons/fa"; // Nuevo ícono para la subida de archivos
+import Popup from "../../../components/Popup";
 
 export default function UploadLayout({ darkMode, onClose, onUploadFile }) {
   const [file, setFile] = useState(null);
+  const [error, setError] = useState("");
+
+  const handleLError = (message) => {
+    setError(message);
+    setTimeout(() => {
+      setError("");
+    }, 3000);
+  };
 
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
@@ -23,10 +32,19 @@ export default function UploadLayout({ darkMode, onClose, onUploadFile }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Validar si es imagen
+    const tiposPermitidos = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!tiposPermitidos.includes(file.type)) {
+      console.error("Formato no permitido. Solo se aceptan imágenes.");
+      handleLError("Formato no permitido. Solo se aceptan imágenes.");
+      return;
+    }
     if (file) {
       onUploadFile(file);
       setFile(null);
     }
+    console.log("No hay archivo");
+    handleLError("No hay archivo");
     onClose();
   };
 
@@ -40,7 +58,7 @@ export default function UploadLayout({ darkMode, onClose, onUploadFile }) {
         }`}
       >
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-2xl font-bold">Subir Archivo</h3>
+          <h3 className="text-2xl font-bold">Subir Imagenes</h3>
           <button
             onClick={onClose}
             className={`p-1 rounded-full transition-colors duration-300 ${
@@ -57,7 +75,7 @@ export default function UploadLayout({ darkMode, onClose, onUploadFile }) {
           <div
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            className={`h-full w-full flex flex-col items-center justify-center p-8 rounded-lg border-2 border-dashed cursor-pointer transition-colors duration-300 ${
+            className={`h-full w-full flex flex-col items-center justify-center p-8 rounded-lg border-2 border-dashed cursor-pointer relative transition-colors duration-300 ${
               darkMode
                 ? "bg-gray-700 border-gray-600 hover:bg-gray-600"
                 : "bg-gray-50 border-gray-300 hover:bg-gray-100"
@@ -68,17 +86,15 @@ export default function UploadLayout({ darkMode, onClose, onUploadFile }) {
                 darkMode ? "text-gray-400" : "text-gray-500"
               }`}
             />
-            <p className="text-lg font-semibold text-center">Arrastra y suelta tu archivo aquí</p>
+            <p className="text-lg font-semibold text-center">Arrastra y suelta tu imagen aqui</p>
             <p className={`text-sm text-center ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-              o haz clic para seleccionar un archivo
+              o haz clic para seleccionar una imagen
             </p>
-            <div className="relative w-full h-full">
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="absolute opacity-0 w-full h-full cursor-pointer"
-              />
-            </div>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
           </div>
 
           {file && (
@@ -87,7 +103,7 @@ export default function UploadLayout({ darkMode, onClose, onUploadFile }) {
                 darkMode ? "bg-gray-700 text-white" : "bg-blue-100 text-blue-800"
               }`}
             >
-              <p className="font-semibold truncate">Archivo seleccionado:</p>
+              <p className="font-semibold truncate">Imagen seleccionada:</p>
               <span className="text-sm">{file.name}</span>
             </div>
           )}
@@ -120,6 +136,7 @@ export default function UploadLayout({ darkMode, onClose, onUploadFile }) {
           </div>
         </form>
       </div>
+      {error && <Popup mensaje={error} colorFondo="#f44336" />}
     </div>
   );
 }
