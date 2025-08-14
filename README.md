@@ -47,3 +47,19 @@ facilitating collaboration and problem-solving in real time. The application mus
 ```bash
 git clone https://github.com/your-username/konecta-realtimechat-back.git
 cd konecta-realtimechat-back
+
+
+konecta-realtimechat-back/
+ ├── config/           # Configuration files
+ ├── controllers/      # Request controllers
+ ├── routers/          # API routes
+ ├── services/         # Business logic and services
+ ├── sockets/          # WebSocket events and logic
+ ├── index.js          # Application entry point
+ ├── dockerfile        # Docker build configuration
+ ├── .dockerignore     # Docker ignore rules
+ ├── .gitignore        # Git ignore rules
+ ├── package.json      # Dependencies and scripts
+ ├── web.config        # IIS/hosting configuration
+ └── .env              # Environment variables
+
