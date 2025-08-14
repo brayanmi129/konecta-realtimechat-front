@@ -82,7 +82,7 @@ export default function CreateGroupModal({ darkMode, onClose, onCreateGroup, ava
                     {user.avatar ? (
                       <img
                         src={user.avatar}
-                        alt={`Avatar de ${user.nick}`}
+                        alt={`Avatar de ${user.nombre}`}
                         className="w-8 h-8 rounded-full object-cover"
                       />
                     ) : (
