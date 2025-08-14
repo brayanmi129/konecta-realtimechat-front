@@ -51,19 +51,23 @@ export default function ChatPage() {
       });
 
       socketRef.current.on("messageToChat", (newMessage) => {
-        console.log("Nuevo mensaje", newMessage);
         if (chatSelectedRef.current && newMessage?.chat_id === chatSelectedRef.current) {
           setMessages((prevMessages) => [...prevMessages, newMessage]);
         }
       });
-    }
 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
+      // 🔹 Intervalo solo después de que el socket existe
+      const pingInterval = setInterval(() => {
+        socketRef.current?.emit("pingServer");
+      }, 5000);
+
+      // 🔹 Limpieza
+      return () => {
+        clearInterval(pingInterval);
+        socketRef.current?.disconnect();
         socketRef.current = null;
-      }
-    };
+      };
+    }
   }, [navigate]);
 
   useEffect(() => {
