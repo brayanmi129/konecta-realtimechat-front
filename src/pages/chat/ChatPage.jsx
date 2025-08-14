@@ -111,19 +111,15 @@ export default function ChatPage() {
     const chatId = group.id;
     setChatSelected(chatId);
 
-    socketRef.current.emit(
-      "getMessages",
-      { id: chatId, isGroup: true, currentUserId: currentUser.id },
-      (chatInfo) => {
-        console.log("Infoooo grupo", chatInfo);
-        if (chatInfo && chatInfo.messages && chatInfo.chatId) {
-          setMessages(chatInfo.messages);
-          setChatSelected(chatInfo.chatId);
-        } else {
-          console.warn("Respuesta inválida de getMessages", chatInfo);
-        }
+    socketRef.current.emit("getMessagesGroup", { id: chatId }, (chatInfo) => {
+      console.log("Infoooo grupo", chatInfo);
+      if (chatInfo && chatInfo.messages && chatInfo.chatId) {
+        setMessages(chatInfo.messages);
+        setChatSelected(chatInfo.chatId);
+      } else {
+        console.warn("Respuesta inválida de getMessages", chatInfo);
       }
-    );
+    });
   };
 
   const handleSendMessage = (messageText) => {
@@ -184,6 +180,8 @@ export default function ChatPage() {
             selectedUser={selectedUser}
             selectedGroup={selectedGroup}
             darkMode={darkMode}
+            socket={socketRef.current}
+            currentUser={currentUser}
           />
         </div>
         {/* Footer */}
@@ -243,7 +241,7 @@ export default function ChatPage() {
                   className={`w-12 h-12 ${darkMode ? "text-gray-500" : "text-gray-400"}`}
                 />
                 <h2 className={`text-xl font-bold ${darkMode ? "text-white" : "text-black"}`}>
-                  {selectedUser ? selectedUser.nombre : selectedGroup?.name}
+                  {selectedUser ? selectedUser.nombre : selectedGroup?.nombre}
                 </h2>
               </div>
             </div>

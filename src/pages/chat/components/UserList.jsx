@@ -14,6 +14,8 @@ export default function UserList({
   selectedGroup,
   selectedUser,
   darkMode,
+  socket,
+  currentUser,
 }) {
   const [createGroup, setCreateGroup] = useState(false);
   const [showUsers, setShowUsers] = useState(true);
@@ -22,7 +24,14 @@ export default function UserList({
   const handleCloseCreateGroup = () => setCreateGroup(false);
 
   const handleCreateGroup = (groupData) => {
-    console.log("Creando grupo con los siguientes datos:", groupData);
+    if (groupData.name && groupData.users.length > 0) {
+      // Enviar al backend vía WebSocket
+      socket.emit("createGroup", {
+        name: groupData.name,
+        users: groupData.users.map((u) => u.id),
+        creator: currentUser.id,
+      });
+    }
     handleCloseCreateGroup();
   };
 
@@ -160,7 +169,7 @@ export default function UserList({
                       darkMode ? "text-white" : "text-gray-800"
                     }`}
                   >
-                    {group.name}
+                    {group.nombre}
                   </span>
                 </div>
               </li>
