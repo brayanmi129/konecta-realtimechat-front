@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { IoSend } from "react-icons/io5";
 import { IoMdAttach } from "react-icons/io";
-import UploadLayout from "./UploadLayout"; // Assuming you have an UploadLayout component
+import UploadLayout from "./UploadLayout";
+import utils from "../../../utils/chatFunctions";
 
-export default function MessageInput({ onSendMessage, darkMode }) {
+export default function MessageInput({ onSendMessage, onSendAttachment, darkMode }) {
   const [message, setMessage] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileUpload = (file) => {
+  const handleFileUpload = async (file) => {
     console.log("Archivo listo para subir:", file);
+
+    try {
+      await onSendAttachment(file);
+    } catch (error) {
+      console.error("Fallo al subir el archivo:", error);
+    }
   };
 
   const handleSubmit = (e) => {
