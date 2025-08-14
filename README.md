@@ -1,12 +1,49 @@
-# React + Vite
+# Konecta ChatApp - Backend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Backend for a real-time chat application developed in **Node.js** using **Socket.IO**.  
+Provides user connection management, private and group messaging, and file attachments.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📋 Client Requirement
 
-## Expanding the ESLint configuration
+The client requires a chat application that enables instant communication between employees,  
+facilitating collaboration and problem-solving in real time. The application must be intuitive and easy to use.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## ✅ Implemented Features
+
+### 1. User Management
+- Requests a **nickname** when logging in (no password required).
+- Adds the user to the list of connected users.
+- Updates the list in real time using WebSockets.
+
+### 2. Messaging
+- Send and receive messages between two connected users.
+- Differentiate between sent and received messages.
+- Include date and time in each message.
+- Support for sending files (e.g., images, PDFs).
+
+### 3. Groups
+- Create and display chat groups.
+- Send and receive group messages in real time.
+
+---
+
+## 🛠️ Technologies Used
+
+- **Backend:** Node.js + Express
+- **Real-time communication:** Socket.IO
+- **File handling:** Custom upload service
+- **Containerization:** Docker
+- **Environment management:** dotenv
+
+---
+
+## 🚀 Installation and Run
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/konecta-realtimechat-back.git
+cd konecta-realtimechat-back
