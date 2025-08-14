@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import UserList from "./components/UserList";
 import MessageArea from "./components/MessageArea";
 import MessageInput from "./components/MessageInput";
-import { MdNotificationsNone, MdLogout, MdSearch, MdDarkMode, MdLightMode } from "react-icons/md";
+import { MdNotificationsNone, MdLogout, MdDarkMode, MdLightMode } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
 import io from "socket.io-client";
 
 export default function ChatPage() {
   const navigate = useNavigate();
+
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [groups, setGroups] = useState([]);
@@ -22,68 +23,71 @@ export default function ChatPage() {
   const socketRef = useRef(null);
   const chatSelectedRef = useRef(chatSelected);
 
+  // Mantener referencia actualizada del chat seleccionado
   useEffect(() => {
     chatSelectedRef.current = chatSelected;
   }, [chatSelected]);
 
+  // Conexión del socket
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
       navigate("/");
       return;
     }
-
     setCurrentUser(user);
 
     if (!socketRef.current) {
-      const socketInstance = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3000");
+      const socketInstance = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:3000", {
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 2000,
+      });
+
       socketRef.current = socketInstance;
 
-      socketRef.current.emit("login", { id: user.id, nombre: user.nombre });
+      socketInstance.emit("login", { id: user.id, nombre: user.nombre });
 
-      socketRef.current.on("onlineUsers", (users) => {
-        const filteredUsers = users.filter((useronline) => useronline.id !== user.id);
-        setOnlineUsers(filteredUsers);
+      socketInstance.off("onlineUsers").on("onlineUsers", (users) => {
+        setOnlineUsers(users.filter((u) => u.id !== user.id));
       });
 
-      socketRef.current.on("groups", (newGroups) => {
-        setGroups(newGroups);
-      });
+      socketInstance.off("groups").on("groups", setGroups);
 
-      socketRef.current.on("messageToChat", (newMessage) => {
+      socketInstance.off("messageToChat").on("messageToChat", (newMessage) => {
         if (chatSelectedRef.current && newMessage?.chat_id === chatSelectedRef.current) {
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
+          setMessages((prev) => [...prev, newMessage]);
         }
       });
-
-      // 🔹 Intervalo solo después de que el socket existe
-      const pingInterval = setInterval(() => {
-        socketRef.current?.emit("pingServer");
-      }, 5000);
-
-      // 🔹 Limpieza
-      return () => {
-        clearInterval(pingInterval);
-        socketRef.current?.disconnect();
-        socketRef.current = null;
-      };
     }
-  }, [navigate]);
 
+    // Ping manual al servidor
+    const pingInterval = setInterval(() => {
+      if (socketRef.current?.connected) {
+        console.log("Ping");
+        socketRef.current.emit("pingServer");
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(pingInterval);
+      socketRef.current?.disconnect();
+      socketRef.current = null;
+    };
+  }, []);
+
+  // Unirse y salir del chat seleccionado
   useEffect(() => {
-    if (!chatSelected || !socketRef.current) return;
+    if (!chatSelected || !socketRef.current?.connected) return;
 
     socketRef.current.emit("joinChat", chatSelected);
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.emit("leaveChat", chatSelected);
-      }
+      socketRef.current?.emit("leaveChat", chatSelected);
     };
   }, [chatSelected]);
 
   const handleSelectUser = (user) => {
-    console.log("Usuario seleccionado", user);
     setSelectedUser(user);
     setSelectedGroup(null);
     setMessages([]);
@@ -94,12 +98,9 @@ export default function ChatPage() {
       "getMessages",
       { currentUserId: currentUser.id, otherUserId: user.id },
       (chatInfo) => {
-        console.log("Infooo chat", chatInfo);
-        if (chatInfo && chatInfo.messages && chatInfo.chatId) {
+        if (chatInfo?.messages && chatInfo.chatId) {
           setMessages(chatInfo.messages);
           setChatSelected(chatInfo.chatId);
-        } else {
-          console.warn("Respuesta inválida de getMessages", chatInfo);
         }
       }
     );
@@ -116,12 +117,9 @@ export default function ChatPage() {
     setChatSelected(chatId);
 
     socketRef.current.emit("getMessagesGroup", { id: chatId }, (chatInfo) => {
-      console.log("Infoooo grupo", chatInfo);
-      if (chatInfo && chatInfo.messages && chatInfo.chatId) {
+      if (chatInfo?.messages && chatInfo.chatId) {
         setMessages(chatInfo.messages);
         setChatSelected(chatInfo.chatId);
-      } else {
-        console.warn("Respuesta inválida de getMessages", chatInfo);
       }
     });
   };
@@ -144,9 +142,7 @@ export default function ChatPage() {
   };
 
   const handleLogout = () => {
-    if (socketRef.current) {
-      socketRef.current.disconnect();
-    }
+    socketRef.current?.disconnect();
     localStorage.removeItem("user");
     navigate("/");
   };
@@ -174,6 +170,7 @@ export default function ChatPage() {
             <MdNotificationsNone size={24} />
           </button>
         </div>
+
         {/* Lista de usuarios y grupos */}
         <div className="flex-1 overflow-y-auto">
           <UserList
@@ -188,6 +185,7 @@ export default function ChatPage() {
             currentUser={currentUser}
           />
         </div>
+
         {/* Footer */}
         <div
           className={`p-5 border-t ${
