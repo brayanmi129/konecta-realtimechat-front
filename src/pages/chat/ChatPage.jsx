@@ -174,28 +174,6 @@ export default function ChatPage() {
             <MdNotificationsNone size={24} />
           </button>
         </div>
-
-        {/* Search */}
-        <div className={`p-4 border-b ${darkMode ? "border-gray-700" : "border-gray-200"}`}>
-          <div className="relative">
-            <MdSearch
-              className={`absolute left-3 top-1/2 -translate-y-1/2 ${
-                darkMode ? "text-gray-400" : "text-gray-500"
-              }`}
-              size={20}
-            />
-            <input
-              type="text"
-              placeholder="Buscar usuarios..."
-              className={`w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                darkMode
-                  ? "bg-gray-700 text-white border-gray-600 placeholder-gray-400"
-                  : "bg-white border-gray-300 placeholder-gray-400"
-              }`}
-            />
-          </div>
-        </div>
-
         {/* Lista de usuarios y grupos */}
         <div className="flex-1 overflow-y-auto">
           <UserList
@@ -208,7 +186,6 @@ export default function ChatPage() {
             darkMode={darkMode}
           />
         </div>
-
         {/* Footer */}
         <div
           className={`p-5 border-t ${
