@@ -28,11 +28,14 @@ jobs:
       - name: Install dependencies
         run: npm install
         
+      - name: Create .env file with secrets
+        run: |
+          echo "VITE_SOCKET_URL=${{ secrets.VITE_SOCKET_URL }}" > .env
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
+          # Aquí puedes agregar cualquier otra variable de entorno que necesites
+        
       - name: Build
         run: npm run build
-        env:
-          VITE_SOCKET_URL: ${{ secrets.VITE_SOCKET_URL }}
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
       
       - name: Build And Deploy
         id: builddeploy
