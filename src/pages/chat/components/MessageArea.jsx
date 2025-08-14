@@ -5,6 +5,7 @@ export default function MessageArea({ messages, currentUser, darkMode, isGroup }
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      console.log(messages);
     }
   }, [messages]);
   return (
@@ -25,7 +26,9 @@ export default function MessageArea({ messages, currentUser, darkMode, isGroup }
               }`}
             >
               {/* 👇 En grupos, si no es tu mensaje, muestra quién lo envió */}
-              {isGroup && !isOwnMessage && <p className="font-bold mb-1">{message.usuario_id}</p>}
+              {isGroup && !isOwnMessage && (
+                <p className="font-bold mb-1">{message.usuario_nombre}</p>
+              )}
 
               <p>{message.contenido}</p>
               <span className="block text-right text-xs mt-1 opacity-70">

@@ -17,9 +17,11 @@ export default function CreateGroupModal({ darkMode, onClose, onCreateGroup, ava
   };
 
   const handleSubmit = (e) => {
+    console.log(groupName, selectedUsers);
     e.preventDefault();
-    if (groupName && selectedUsers.length > 0) {
-      onCreateGroup({ groupName, users: selectedUsers });
+    const response = onCreateGroup({ name: groupName, users: selectedUsers });
+    if (response) {
+      onClose();
     }
   };
 
