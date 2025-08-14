@@ -7,7 +7,7 @@ import { useState } from "react";
 import CreateGroupModal from "./CreateGroupModal";
 
 export default function UserList({
-  users, // ahora solo onlineUsers
+  users,
   groups,
   onSelectUser,
   onSelectGroup,
@@ -79,9 +79,9 @@ export default function UserList({
                   />
                 )}
                 <FaCircle
-                  className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 ${
+                  className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 text-green-500 ${
                     darkMode ? "border-gray-800" : "border-white"
-                  } ${user.isOnline ? "text-green-500" : "text-gray-500"}`}
+                  }`}
                 />
               </div>
               <div className="flex-1 min-w-0">
@@ -167,7 +167,7 @@ export default function UserList({
             ))
           ) : (
             <p className={`p-4 text-center ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-              No tienes grupos creados.
+              No perteneces a ningun grupo.
             </p>
           )}
         </ul>

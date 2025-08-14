@@ -91,12 +91,12 @@ export default function CreateGroupModal({ darkMode, onClose, onCreateGroup, ava
                       />
                     )}
                     <FaCircle
-                      className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 ${
+                      className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 text-green-500 ${
                         darkMode ? "border-gray-700" : "border-white"
-                      } ${user.isOnline ? "text-green-500" : "text-gray-500"}`}
+                      }`}
                     />
                   </div>
-                  <span>{user.nick}</span>
+                  <span>{user.nombre}</span>
                 </li>
               ))}
             </ul>

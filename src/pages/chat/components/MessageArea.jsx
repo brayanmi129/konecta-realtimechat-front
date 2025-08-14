@@ -28,7 +28,16 @@ export default function MessageArea({ messages, currentUser, darkMode, isGroup }
               {isGroup && !isOwnMessage && <p className="font-bold mb-1">{message.usuario_id}</p>}
 
               <p>{message.contenido}</p>
-              <span className="block text-right text-xs mt-1 opacity-70">{message.creado}</span>
+              <span className="block text-right text-xs mt-1 opacity-70">
+                {new Date(message.creado).toLocaleString("es-CO", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                })}
+              </span>
             </div>
           </div>
         );
