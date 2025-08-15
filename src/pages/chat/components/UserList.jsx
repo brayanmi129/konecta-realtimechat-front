@@ -7,6 +7,7 @@ import { useState } from "react";
 import CreateGroupModal from "./CreateGroupModal";
 
 export default function UserList({
+  users,
   privateChats,
   groups,
   onSelectUser,
