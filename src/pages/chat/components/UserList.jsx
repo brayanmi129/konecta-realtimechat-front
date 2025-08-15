@@ -95,11 +95,11 @@ export default function UserList({
                 />
 
                 <FaCircle
-                  className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 ${
-                    chat.participants[0].estado === "conectado"
-                      ? "border-green-500"
-                      : "border-gray-400"
-                  } ${darkMode ? "border-gray-800" : "border-white"}`}
+                  className={`absolute bottom-0 right-0 w-4 h-4 rounded-full ${
+                    chat.participants[0]?.estado?.trim().toLowerCase() === "conectado"
+                      ? "text-green-500"
+                      : "text-gray-500"
+                  }`}
                 />
               </div>
               <div className="flex-1 min-w-0">
