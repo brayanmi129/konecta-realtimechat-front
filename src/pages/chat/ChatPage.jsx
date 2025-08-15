@@ -58,7 +58,7 @@ export default function ChatPage() {
       socketInstance.off("groupChats").on("groupChats", setGroups);
       socketInstance.off("privateChats").on("privateChats", setPrivateChats);
 
-      socketInstance.off("messageToChat").on("messageToChat", (newMessage) => {
+      socketInstance.off("messageReceived").on("messageReceived", (newMessage) => {
         if (chatSelectedRef.current && newMessage?.chat_id === chatSelectedRef.current) {
           setMessages((prev) => [...prev, newMessage]);
         }
@@ -92,6 +92,7 @@ export default function ChatPage() {
   }, [chatSelected]);
 
   const handleSelectUser = (user) => {
+    console.log("Usuario seleccionado:", user);
     setSelectedUser(user);
     setSelectedGroup(null);
     setMessages([]);
