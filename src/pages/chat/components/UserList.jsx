@@ -3,7 +3,7 @@ import { FaCircle } from "react-icons/fa";
 import { IoPersonCircle } from "react-icons/io5";
 import { CiCirclePlus } from "react-icons/ci";
 import { IoChevronDown, IoChevronForward } from "react-icons/io5";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreateGroupModal from "./CreateGroupModal";
 
 export default function UserList({
