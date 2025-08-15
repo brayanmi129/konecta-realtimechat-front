@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import UserList from "./components/UserList";
 import MessageArea from "./components/MessageArea";
 import MessageInput from "./components/MessageInput";
+import OnlineUsers from "./components/OnlineUsers";
 import { MdNotificationsNone, MdLogout, MdDarkMode, MdLightMode } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
 import io from "socket.io-client";
@@ -14,6 +15,7 @@ export default function ChatPage() {
 
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [privateChats, setPrivateChats] = useState([]);
   const [groups, setGroups] = useState([]);
   const [messages, setMessages] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -53,7 +55,8 @@ export default function ChatPage() {
         setOnlineUsers(users.filter((u) => u.id !== user.id));
       });
 
-      socketInstance.off("groups").on("groups", setGroups);
+      socketInstance.off("groupChats").on("groupChats", setGroups);
+      socketInstance.off("privateChats").on("privateChats", setPrivateChats);
 
       socketInstance.off("messageToChat").on("messageToChat", (newMessage) => {
         if (chatSelectedRef.current && newMessage?.chat_id === chatSelectedRef.current) {
@@ -194,7 +197,7 @@ export default function ChatPage() {
         {/* Lista de usuarios y grupos */}
         <div className="flex-1 overflow-y-auto">
           <UserList
-            users={onlineUsers}
+            privateChats={privateChats}
             groups={groups}
             onSelectGroup={handleGroup}
             onSelectUser={handleSelectUser}
@@ -288,6 +291,14 @@ export default function ChatPage() {
           </div>
         )}
       </div>
+      <OnlineUsers
+        users={onlineUsers}
+        socket={socketRef.current}
+        currentUser={currentUser}
+        onSelectUser={handleSelectUser}
+        selectedUser={selectedUser}
+        darkMode={darkMode}
+      />
     </div>
   );
 }

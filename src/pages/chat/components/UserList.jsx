@@ -7,7 +7,7 @@ import { useState } from "react";
 import CreateGroupModal from "./CreateGroupModal";
 
 export default function UserList({
-  users,
+  privateChats,
   groups,
   onSelectUser,
   onSelectGroup,
@@ -54,18 +54,18 @@ export default function UserList({
           onClick={() => setShowUsers(!showUsers)}
         >
           {showUsers ? <IoChevronDown /> : <IoChevronForward />}
-          Usuarios Conectados
+          Mis conversaciones
         </h2>
       </div>
 
       {/* LISTA USUARIOS */}
       {showUsers && (
         <ul className="flex-1 overflow-y-auto">
-          {users.map((user) => (
+          {privateChats.map((chat) => (
             <li
-              key={user.id}
+              key={chat.chatId}
               className={`flex items-center p-4 cursor-pointer border-l-4 ${
-                selectedUser?.id === user.id
+                selectedUser?.chatId === chat.chatId
                   ? darkMode
                     ? "bg-blue-900 border-blue-500"
                     : "bg-blue-100 border-blue-600"
@@ -73,31 +73,26 @@ export default function UserList({
                   ? "hover:bg-gray-700 border-transparent"
                   : "hover:bg-gray-100 border-transparent"
               }`}
-              onClick={() => onSelectUser(user)}
+              onClick={() => onSelectUser(chat.participants[0])}
             >
               <div className="relative mr-4">
-                {user.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={`Avatar de ${user.nombre}`}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                ) : (
-                  <IoPersonCircle
-                    className={`w-12 h-12 ${darkMode ? "text-gray-600" : "text-gray-400"}`}
-                  />
-                )}
+                <IoPersonCircle
+                  className={`w-12 h-12 ${darkMode ? "text-gray-600" : "text-gray-400"}`}
+                />
+
                 <FaCircle
-                  className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 text-green-500 ${
-                    darkMode ? "border-gray-800" : "border-white"
-                  }`}
+                  className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 ${
+                    chat.participants[0].estado === "conectado"
+                      ? "border-green-500"
+                      : "border-gray-400"
+                  } ${darkMode ? "border-gray-800" : "border-white"}`}
                 />
               </div>
               <div className="flex-1 min-w-0">
                 <span
                   className={`font-semibold truncate ${darkMode ? "text-white" : "text-gray-800"}`}
                 >
-                  {user.nombre}
+                  {chat.participants[0].nombre}
                 </span>
               </div>
             </li>
