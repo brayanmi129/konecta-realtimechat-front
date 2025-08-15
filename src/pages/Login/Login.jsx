@@ -2,12 +2,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Popup from "../../components/Popup";
+import Spinner from "../../components/Spinner";
 import utils from "../../utils/chatFunctions";
 
 export default function Login() {
   const [nombre, setnombre] = useState("");
-  const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLError = (message) => {
     setError(message);
@@ -20,9 +22,16 @@ export default function Login() {
     if (nombre.trim() === "") {
       handleLError("Por favor, ingresa un nombre.");
     } else {
-      const user = await utils.createUser(nombre);
-      localStorage.setItem("user", JSON.stringify({ nombre: user.nombre, id: user.id }));
-      navigate("/chat");
+      try {
+        setLoading(true);
+        const user = await utils.createUser(nombre);
+        localStorage.setItem("user", JSON.stringify({ nombre: user.nombre, id: user.id }));
+        navigate("/chat");
+      } catch (err) {
+        handleLError("Error al iniciar sesión.");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -47,6 +56,7 @@ export default function Login() {
         </div>
       </div>
       {error && <Popup mensaje={error} colorFondo="#f44336" />}
+      {loading && <Spinner />}
     </div>
   );
 }
