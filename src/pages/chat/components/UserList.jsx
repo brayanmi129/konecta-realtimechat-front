@@ -24,6 +24,19 @@ export default function UserList({
 
   const handleCloseCreateGroup = () => setCreateGroup(false);
 
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.emit("getConnectedUsers");
+
+    socket.on("connectedUsers", (connectedUsers) => {
+      const otherUsers = connectedUsers.filter((u) => u.id !== currentUser.id);
+      setUsers(otherUsers);
+    });
+
+    return () => socket.off("connectedUsers");
+  }, [socket, currentUser]);
+
   const handleCreateGroup = (groupData) => {
     if (groupData.name && groupData.users.length > 0) {
       // Enviar al backend vía WebSocket
