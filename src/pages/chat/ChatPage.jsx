@@ -197,6 +197,7 @@ export default function ChatPage() {
         {/* Lista de usuarios y grupos */}
         <div className="flex-1 overflow-y-auto">
           <UserList
+            users={onlineUsers}
             privateChats={privateChats}
             groups={groups}
             onSelectGroup={handleGroup}
