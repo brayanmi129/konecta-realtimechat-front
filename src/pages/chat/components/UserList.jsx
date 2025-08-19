@@ -102,6 +102,7 @@ export default function UserList({
                   }`}
                 />
               </div>
+
               <div className="flex-1 min-w-0">
                 <span
                   className={`font-semibold truncate ${darkMode ? "text-white" : "text-gray-800"}`}
@@ -109,6 +110,13 @@ export default function UserList({
                   {chat.participants[0].nombre}
                 </span>
               </div>
+
+              {/* 🔔 Badge de no leídos */}
+              {chat.mensajesNoLeidos > 0 && (
+                <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  {chat.mensajesNoLeidos}
+                </span>
+              )}
             </li>
           ))}
         </ul>

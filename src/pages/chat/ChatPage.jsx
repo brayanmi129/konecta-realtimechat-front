@@ -106,6 +106,12 @@ export default function ChatPage() {
         if (chatInfo?.messages && chatInfo.chatId) {
           setMessages(chatInfo.messages);
           setChatSelected(chatInfo.chatId);
+
+          // 👇 Avisar al backend que los mensajes ya se leyeron
+          socketRef.current.emit("markAsRead", {
+            chatId: chatInfo.chatId,
+            userId: currentUser.id,
+          });
         }
       }
     );
@@ -141,6 +147,7 @@ export default function ChatPage() {
       archivo_nombre: null,
       creado: new Date().toISOString(),
       sender_name: currentUser.nombre,
+      new: true,
     };
 
     socketRef.current.emit("sendMessage", newMessage);
